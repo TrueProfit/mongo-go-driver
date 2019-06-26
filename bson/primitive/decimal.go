@@ -25,6 +25,20 @@ func NewDecimal128(h, l uint64) Decimal128 {
 	return Decimal128{h: h, l: l}
 }
 
+// MarshalText returns a textual representation of decimal128. Satisfies
+// `encoding.TextMarshaler`.
+func (d Decimal128) MarshalText() (text []byte, err error) {
+	return []byte(d.String()), nil
+}
+
+// UnmarshalText unmarshals decimal128 from a textual representation. Satisfies
+// `encoding.TextUnmarshaler`.
+func (d *Decimal128) UnmarshalText(text []byte) error {
+	var err error
+	*d, err = ParseDecimal128(string(text))
+	return err
+}
+
 // GetBytes returns the underlying bytes of the BSON decimal value as two uint16 values. The first
 // contains the most first 8 bytes of the value and the second contains the latter.
 func (d Decimal128) GetBytes() (uint64, uint64) {
